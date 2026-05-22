@@ -61,7 +61,7 @@ function Transactions({ projectId }) {
       );
     }
 
-    setFilteredTransactions(filtered.sort((a, b) => new Date(b.date) - new Date(a.date)));
+    setFilteredTransactions(filtered.sort((a, b) => new Date(a.date) - new Date(b.date)));
   };
 
   const handleSave = async (data) => {
