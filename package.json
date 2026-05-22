@@ -1,0 +1,51 @@
+{
+  "name": "renovation-budget-app",
+  "version": "1.0.0",
+  "description": "Aplikasi Desktop Manajemen Budget Renovasi Bangunan",
+  "main": "src/main/entry.js",
+  "homepage": "./",
+  "author": "Your Name",
+  "license": "MIT",
+  "scripts": {
+    "dev": "cross-env ELECTRON_RUN_AS_NODE=0 concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+    "dev:electron": "cross-env VITE_DEV_SERVER_URL=http://localhost:5173 ELECTRON_RUN_AS_NODE=0 electron .",
+    "dev:vite": "vite",
+    "build": "vite build",
+    "build:electron": "npm run build && electron-builder",
+    "preview": "vite preview",
+    "electron": "cross-env ELECTRON_RUN_AS_NODE=0 electron .",
+    "start": "cross-env ELECTRON_RUN_AS_NODE=0 electron .",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "reinstall": "rmdir /s /q node_modules & del package-lock.json & npm install && npm run prisma:generate && npm run dev",
+    "fix:electron": "rmdir /s /q node_modules\\electron & npm install electron"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.7.0",
+    "date-fns": "^2.30.0",
+    "electron-is-dev": "^2.0.0",
+    "lucide-react": "^0.294.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.21.0",
+    "recharts": "^2.10.3",
+    "sqlite3": "^5.1.6",
+    "tailwindcss": "^3.4.1",
+    "uuid": "^9.0.0",
+    "zustand": "^4.4.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.6",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.16",
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "electron": "^27.3.11",
+    "electron-builder": "^24.6.4",
+    "postcss": "^8.4.31",
+    "prisma": "^5.7.0",
+    "vite": "^5.0.2",
+    "wait-on": "^7.1.0"
+  }
+}

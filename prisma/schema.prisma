@@ -1,0 +1,114 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Project {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  description   String?
+  location      String?
+  budgetTotal   Float    @default(0)
+  status        String   @default("planning")
+  startDate     DateTime?
+  endDate       DateTime?
+  transactions  Transaction[]
+  budgets       Budget[]
+  taxes         Tax[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  @@map("projects")
+}
+
+model Transaction {
+  id              String   @id @default(cuid())
+  projectId       String
+  type            String
+  category        String
+  description     String
+  amount          Float    @default(0)
+  quantity        Int?
+  unitPrice       Float?
+  date            DateTime
+  paymentStatus   String   @default("pending")
+  vendorName      String?
+  notes           String?
+  project         Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  paymentRecords  PaymentRecord[]
+  taxes           Tax[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  @@index([projectId])
+  @@index([date])
+  @@index([type])
+  @@map("transactions")
+}
+
+model Budget {
+  id              String   @id @default(cuid())
+  projectId       String
+  category        String
+  allocatedAmount Float    @default(0)
+  spentAmount     Float    @default(0)
+  notes           String?
+  project         Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  @@unique([projectId, category])
+  @@index([projectId])
+  @@map("budgets")
+}
+
+model Tax {
+  id                    String   @id @default(cuid())
+  projectId             String
+  taxType               String
+  amount                Float    @default(0)
+  percentage            Float?
+  relatedTransactionId  String?
+  paymentDate           DateTime?
+  dueDate               DateTime?
+  status                String   @default("unpaid")
+  referenceNumber       String?
+  notes                 String?
+  project               Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  relatedTransaction    Transaction? @relation(fields: [relatedTransactionId], references: [id], onDelete: SetNull)
+  paymentRecords        PaymentRecord[]
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+  @@index([projectId])
+  @@index([status])
+  @@index([dueDate])
+  @@map("taxes")
+}
+
+model PaymentRecord {
+  id              String   @id @default(cuid())
+  transactionId   String?
+  taxId           String?
+  amountPaid      Float    @default(0)
+  paymentMethod   String
+  paymentDate     DateTime
+  referenceNumber String?
+  notes           String?
+  transaction     Transaction? @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  tax             Tax?         @relation(fields: [taxId], references: [id], onDelete: Cascade)
+  createdAt       DateTime @default(now())
+  @@index([transactionId])
+  @@index([taxId])
+  @@index([paymentDate])
+  @@map("payment_records")
+}
+
+model Report {
+  id              String   @id @default(cuid())
+  projectId       String?
+  reportType      String
+  reportData      String
+  generatedAt     DateTime @default(now())
+  @@map("reports")
+}
